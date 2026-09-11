@@ -13,4 +13,6 @@ def attention(q, k, v, mask=None):
     if mask is not None:
       scores = scores.masked_fill(~mask, float('-inf'))
     probs = torch.softmax(scores, dim=-1)
+    if mask is not None:
+      probs = probs.masked_fill(~mask.any(-1, keepdim=True), 0.0)
     return probs @ v
